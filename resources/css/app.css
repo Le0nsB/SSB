@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Teko:wght@300..700&display=swap');
 @import 'tailwindcss';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
@@ -6,6 +7,289 @@
 @source '../**/*.js';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    --font-sans: 'Rajdhani', 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+@layer base {
+    /* Improves readability on dark UI with cleaner rhythm and contrast */
+    html {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+        background-color: #070707;
+        color: #e4e4e7;
+        line-height: 1.55;
+        letter-spacing: 0.01em;
+    }
+
+    html.theme-light body {
+        background-color: #031a46;
+        background-image:
+            radial-gradient(circle at 20% 0%, rgba(26, 0, 74, 0.638), transparent 45%),
+            radial-gradient(circle at 80% 100%, rgba(11, 0, 53, 0.711), transparent 40%);
+    }
+}
+
+@layer components {
+    /* Adds subtle court-like line texture without heavy graphics */
+    .ssb-shell {
+        @apply bg-black text-zinc-100 min-h-screen;
+        position: relative;
+        background-image:
+            linear-gradient(to bottom, rgba(0, 0, 0, 0.14), rgba(0, 0, 0, 0.14)),
+            repeating-linear-gradient(
+                90deg,
+                rgba(251, 146, 60, 0.035) 0,
+                rgba(251, 146, 60, 0.035) 1px,
+                transparent 1px,
+                transparent 56px
+            );
+    }
+
+    /* Keeps header readable and anchored while scrolling */
+    .ssb-header {
+        @apply border-b border-zinc-800/80 bg-zinc-950/92 backdrop-blur;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+    }
+
+    /* Brand stays bold but slightly more premium */
+    .ssb-brand {
+        @apply text-lg font-extrabold tracking-[0.06em] text-orange-400;
+        font-family: 'Teko', 'Rajdhani', sans-serif;
+    }
+
+    /* Clear interactive nav target with subtle contrast */
+    .ssb-nav-link {
+        @apply relative rounded-md px-2 py-1 text-zinc-300 transition-colors duration-200 hover:text-zinc-100;
+    }
+
+    /* Active nav gets clear but lightweight orange indicator */
+    .ssb-nav-link-active {
+        @apply text-zinc-100;
+    }
+
+    .ssb-nav-link-active::after {
+        content: '';
+        position: absolute;
+        left: 0.5rem;
+        right: 0.5rem;
+        bottom: -0.32rem;
+        height: 2px;
+        border-radius: 9999px;
+        background: rgba(251, 146, 60, 0.85);
+    }
+
+    /* Reduce orange overuse: primary headings white, accents stay orange */
+    .ssb-title {
+        @apply text-zinc-100 font-black tracking-[0.03em];
+        font-family: 'Teko', 'Rajdhani', sans-serif;
+    }
+
+    /* Subtitles keep orange for hierarchy and streetball energy */
+    .ssb-subtitle {
+        @apply text-orange-300 font-bold tracking-wide;
+        font-family: 'Teko', 'Rajdhani', sans-serif;
+    }
+
+    /* Card depth + hover feedback improves scanability without flashiness */
+    .ssb-card {
+        @apply border border-zinc-800 rounded-xl bg-zinc-900/95 p-4;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.28);
+        transition: border-color 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .ssb-card:hover {
+        border-color: rgba(251, 146, 60, 0.35);
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.34), 0 0 0 1px rgba(251, 146, 60, 0.08);
+    }
+
+    .ssb-card-line {
+        @apply border-b border-zinc-800;
+    }
+
+    /* Stronger contrast for supporting copy */
+    .ssb-muted {
+        @apply text-zinc-500;
+    }
+
+    .ssb-text {
+        @apply text-zinc-200;
+    }
+
+    /* Primary CTA gets tactile feel with small, performant transitions */
+    .ssb-button-primary {
+        @apply inline-flex items-center justify-center rounded-lg bg-orange-300 px-6 py-3 text-sm font-extrabold text-black;
+        transition: transform 0.16s ease, background-color 0.16s ease, box-shadow 0.16s ease;
+        box-shadow: 0 6px 14px rgba(251, 146, 60, 0.18);
+    }
+
+    .ssb-button-primary:hover {
+        transform: translateY(-1px);
+        background-color: #fb923c;
+        box-shadow: 0 10px 18px rgba(251, 146, 60, 0.24);
+    }
+
+    /* Secondary buttons stay quiet but clear on hover */
+    .ssb-button-secondary {
+        @apply inline-flex items-center justify-center rounded-lg border border-zinc-700 bg-zinc-900 px-6 py-3 text-sm font-bold text-zinc-100;
+        transition: border-color 0.16s ease, color 0.16s ease, background-color 0.16s ease;
+    }
+
+    .ssb-button-secondary:hover {
+        border-color: rgba(251, 146, 60, 0.7);
+        color: #fdba74;
+        background-color: rgba(251, 146, 60, 0.05);
+    }
+
+    .ssb-score {
+        @apply font-mono text-lg font-bold tracking-widest text-lime-400;
+    }
+
+    .ssb-dot {
+        @apply inline-block h-2 w-2 rounded-full bg-red-500;
+    }
+
+    .theme-toggle {
+        @apply inline-flex h-10 w-10 items-center justify-center rounded-lg border border-zinc-700 bg-zinc-900 p-0 text-zinc-200;
+        transition: border-color 0.16s ease, color 0.16s ease, background-color 0.16s ease;
+    }
+
+    .theme-toggle svg {
+        width: 1.2rem;
+        height: 1.2rem;
+        display: block;
+    }
+
+    .theme-toggle:hover {
+        border-color: rgba(251, 146, 60, 0.55);
+        color: #fdba74;
+        background-color: rgba(251, 146, 60, 0.05);
+    }
+
+    .ssb-accent {
+        @apply text-orange-300;
+    }
+
+    /* Section separator boosts hierarchy between blocks */
+    .ssb-fade-divider {
+        display: block;
+        height: 2px;
+        width: min(100%, 34rem);
+        border-radius: 9999px;
+        background: linear-gradient(90deg, rgba(251, 146, 60, 0.9) 0%, rgba(251, 146, 60, 0.45) 55%, rgba(251, 146, 60, 0) 100%);
+    }
+
+    /* Replaces heavy animated frame with static accent frame for performance */
+    .ssb-animated-border {
+        position: relative;
+        padding: 0;
+        border-radius: 0.9rem;
+        background: transparent;
+    }
+
+    .ssb-animated-border > .ssb-card {
+        position: relative;
+        z-index: 1;
+        border: 1px solid rgba(251, 146, 60, 0.35);
+        border-radius: 0.8rem;
+    }
+
+    /* News cards get clearer edge and calmer depth for better readability */
+    .ssb-news-article {
+        position: relative;
+        overflow: hidden;
+        border-top: 1px solid rgba(251, 146, 60, 0.55);
+        border-bottom: 1px solid rgba(251, 146, 60, 0.45);
+        border-left: 2px solid rgba(251, 146, 60, 0.72);
+        border-right: 0;
+        background: linear-gradient(90deg, rgba(39, 39, 42, 0.62) 0%, rgba(39, 39, 42, 0.3) 60%, rgba(39, 39, 42, 0) 100%);
+    }
+
+    .theme-light .ssb-accent {
+        @apply text-white;
+    }
+
+    .theme-light .theme-toggle {
+        @apply border-white bg-transparent text-white hover:bg-white hover:text-blue-800;
+    }
+
+    .theme-light .ssb-shell {
+        @apply text-blue-50;
+        background-color: #0b1c3b;
+    }
+
+    .theme-light .ssb-header {
+        @apply border-white bg-blue-950/80;
+    }
+
+    .theme-light .ssb-brand {
+        @apply text-white;
+    }
+
+    .theme-light .ssb-nav-link {
+        @apply text-blue-100 hover:text-white;
+    }
+
+    .theme-light .ssb-nav-link-active {
+        @apply text-white;
+    }
+
+    .theme-light .ssb-title {
+        @apply text-white;
+    }
+
+    .theme-light .ssb-subtitle {
+        @apply text-white;
+    }
+
+    .theme-light .ssb-card {
+        @apply border-white bg-blue-950;
+    }
+
+    .theme-light .ssb-card-line {
+        @apply border-white;
+    }
+
+    .theme-light .ssb-muted {
+        @apply text-blue-100;
+    }
+
+    .theme-light .ssb-text {
+        @apply text-white;
+    }
+
+    .theme-light .ssb-button-primary {
+        @apply bg-white text-blue-800 hover:bg-blue-100;
+    }
+
+    .theme-light .ssb-button-secondary {
+        @apply border-white bg-transparent text-white hover:bg-white hover:text-blue-800;
+    }
+
+    .theme-light .ssb-score {
+        @apply text-white;
+    }
+
+    .theme-light .ssb-dot {
+        @apply bg-white;
+    }
+
+    .theme-light .ssb-news-article {
+        border-top: 1px solid rgba(255, 255, 255, 0.75);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.65);
+        border-left: 2px solid rgba(255, 255, 255, 0.95);
+        border-right: 0;
+        background: linear-gradient(90deg, rgba(0, 30, 65, 0.3) 0%, rgba(147, 197, 253, 0.14) 45%, rgba(147, 197, 253, 0) 100%);
+    }
+
+    .theme-light .ssb-animated-border {
+        background: transparent;
+    }
+
+    .theme-light .ssb-animated-border > .ssb-card {
+        border-color: rgba(255, 255, 255, 0.7);
+    }
 }
