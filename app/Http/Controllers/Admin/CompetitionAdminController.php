@@ -28,32 +28,14 @@ class CompetitionAdminController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        $data = $request->validate([
-            'title' => ['required', 'string', 'max:255'],
-            'location' => ['required', 'string', 'max:255'],
-            'event_date' => ['required', 'date'],
-            'registration_deadline' => ['nullable', 'date'],
-            'team_limit' => ['nullable', 'integer', 'min:1', 'max:999'],
-            'entry_fee' => ['nullable', 'numeric', 'min:0', 'max:9999.99'],
-            'description' => ['nullable', 'string'],
-            'is_published' => ['nullable', 'boolean'],
-        ]);
-
-        $data['is_published'] = $request->boolean('is_published');
-
-        Competition::create($data);
+        Competition::create($this->validatedCompetitionData($request));
 
         return redirect()->route('admin.competitions.index');
     }
 
     public function edit(Competition $competition): View
     {
-        $competition->load([
-            'teams' => fn ($query) => $query->orderBy('name'),
-            'matches' => fn ($query) => $query
-                ->with(['homeTeam', 'awayTeam'])
-                ->latest(),
-        ]);
+        $this->loadCompetitionRelations($competition);
 
         $savedTeams = Team::query()->orderBy('name')->get();
 
@@ -62,20 +44,7 @@ class CompetitionAdminController extends Controller
 
     public function update(Request $request, Competition $competition): RedirectResponse
     {
-        $data = $request->validate([
-            'title' => ['required', 'string', 'max:255'],
-            'location' => ['required', 'string', 'max:255'],
-            'event_date' => ['required', 'date'],
-            'registration_deadline' => ['nullable', 'date'],
-            'team_limit' => ['nullable', 'integer', 'min:1', 'max:999'],
-            'entry_fee' => ['nullable', 'numeric', 'min:0', 'max:9999.99'],
-            'description' => ['nullable', 'string'],
-            'is_published' => ['nullable', 'boolean'],
-        ]);
-
-        $data['is_published'] = $request->boolean('is_published');
-
-        $competition->update($data);
+        $competition->update($this->validatedCompetitionData($request));
 
         return redirect()->route('admin.competitions.index');
     }
@@ -94,12 +63,7 @@ class CompetitionAdminController extends Controller
             'name' => ['nullable', 'string', 'max:255', 'required_without:saved_team_id'],
         ]);
 
-        $teamName = $data['name'] ?? null;
-
-        if (! empty($data['saved_team_id'])) {
-            $savedTeam = Team::query()->find($data['saved_team_id']);
-            $teamName = $savedTeam?->name;
-        }
+        $teamName = $this->resolveTeamName($data);
 
         if (! $teamName) {
             return back()->withErrors(['name' => 'Norādi komandas nosaukumu vai izvēlies saglabātu komandu.']);
@@ -160,5 +124,46 @@ class CompetitionAdminController extends Controller
         });
 
         return redirect()->route('admin.competitions.edit', $competition);
+    }
+
+    private function competitionRules(): array
+    {
+        return [
+            'title' => ['required', 'string', 'max:255'],
+            'location' => ['required', 'string', 'max:255'],
+            'event_date' => ['required', 'date'],
+            'registration_deadline' => ['nullable', 'date'],
+            'team_limit' => ['nullable', 'integer', 'min:1', 'max:999'],
+            'entry_fee' => ['nullable', 'numeric', 'min:0', 'max:9999.99'],
+            'description' => ['nullable', 'string'],
+            'is_published' => ['nullable', 'boolean'],
+        ];
+    }
+
+    private function validatedCompetitionData(Request $request): array
+    {
+        $data = $request->validate($this->competitionRules());
+        $data['is_published'] = $request->boolean('is_published');
+
+        return $data;
+    }
+
+    private function loadCompetitionRelations(Competition $competition): void
+    {
+        $competition->load([
+            'teams' => fn ($query) => $query->orderBy('name'),
+            'matches' => fn ($query) => $query
+                ->with(['homeTeam', 'awayTeam'])
+                ->latest(),
+        ]);
+    }
+
+    private function resolveTeamName(array $data): ?string
+    {
+        if (! empty($data['saved_team_id'])) {
+            return Team::query()->find($data['saved_team_id'])?->name;
+        }
+
+        return $data['name'] ?? null;
     }
 }

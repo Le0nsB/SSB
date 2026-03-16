@@ -18,8 +18,7 @@ class HomeController extends Controller
         $nextCompetition = null;
         $latestFinishedCompetition = null;
         $latestNews = collect();
-        $mediaItems = collect();
-        $newsMediaByTitle = [];
+        $mediaItems = $this->getSsbMediaItems();
 
         if (Schema::hasTable('competitions')) {
             $nextCompetition = Competition::query()
@@ -60,47 +59,18 @@ class HomeController extends Controller
         }
 
         if (! $nextCompetition) {
-            $nextCompetition = (object) [
-                'title' => 'Sunny Streetball #1',
-                'location' => 'Priekuļu Sporta birze',
-                'event_date' => Carbon::now()->addDays(12),
-                'registration_deadline' => Carbon::now()->addDays(9),
-                'team_limit' => 12,
-                'entry_fee' => 5.00,
-                'description' => 'Atklāšanas posms ar grupu turnīru un play-off.',
-            ];
+            $nextCompetition = $this->fallbackNextCompetition();
         }
 
         if ($latestNews->isEmpty()) {
-            $latestNews = collect([
-                (object) [
-                    'title' => 'Atvērta pieteikšanās Sunny Streetball #1',
-                    'excerpt' => 'Savāc komandu un piesakies līdz nākamās nedēļas trešdienai.',
-                ],
-                (object) [
-                    'title' => 'Publicēts turnīra dienas grafiks',
-                    'excerpt' => 'Komandu reģistrācija no 10:00, pirmās spēles starts 11:00.',
-                ],
-                (object) [
-                    'title' => 'Meklējam brīvprātīgos tiesnešus',
-                    'excerpt' => 'Ja vēlies iesaistīties pasākuma organizēšanā, dod mums ziņu Instagram.',
-                ],
-            ]);
+            $latestNews = $this->fallbackLatestNews();
         }
 
-        $mediaItems = $this->getSsbMediaItems();
-
-        if ($mediaItems->isNotEmpty()) {
-
-            $videos = $mediaItems->where('kind', 'video')->values();
-            $images = $mediaItems->where('kind', 'image')->values();
-
-            $newsMediaByTitle = [
-                'Atvērta pieteikšanās Sunny Streetball #1' => $videos->get(0),
-                'Publicēts turnīra dienas grafiks' => $videos->get(1),
-                'Meklējam brīvprātīgos tiesnešus' => $images->get(0),
-            ];
-        }
+        $newsMediaByTitle = $this->mapMediaToTitles($mediaItems, [
+            'Atvērta pieteikšanās Sunny Streetball #1' => 'video',
+            'Publicēts turnīra dienas grafiks' => 'video',
+            'Meklējam brīvprātīgos tiesnešus' => 'image',
+        ]);
 
         return view('home', [
             'nextCompetition' => $nextCompetition,
@@ -108,6 +78,37 @@ class HomeController extends Controller
             'latestNews' => $latestNews,
             'mediaItems' => $mediaItems,
             'newsMediaByTitle' => $newsMediaByTitle,
+        ]);
+    }
+
+    private function fallbackNextCompetition(): object
+    {
+        return (object) [
+            'title' => 'Sunny Streetball #1',
+            'location' => 'Priekuļu Sporta birze',
+            'event_date' => Carbon::now()->addDays(12),
+            'registration_deadline' => Carbon::now()->addDays(9),
+            'team_limit' => 12,
+            'entry_fee' => 5.00,
+            'description' => 'Atklāšanas posms ar grupu turnīru un play-off.',
+        ];
+    }
+
+    private function fallbackLatestNews(): \Illuminate\Support\Collection
+    {
+        return collect([
+            (object) [
+                'title' => 'Atvērta pieteikšanās Sunny Streetball #1',
+                'excerpt' => 'Savāc komandu un piesakies līdz nākamās nedēļas trešdienai.',
+            ],
+            (object) [
+                'title' => 'Publicēts turnīra dienas grafiks',
+                'excerpt' => 'Komandu reģistrācija no 10:00, pirmās spēles starts 11:00.',
+            ],
+            (object) [
+                'title' => 'Meklējam brīvprātīgos tiesnešus',
+                'excerpt' => 'Ja vēlies iesaistīties pasākuma organizēšanā, dod mums ziņu Instagram.',
+            ],
         ]);
     }
 }

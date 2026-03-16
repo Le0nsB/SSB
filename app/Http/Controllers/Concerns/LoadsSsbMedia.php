@@ -43,4 +43,26 @@ trait LoadsSsbMedia
                 ];
             });
     }
+
+    protected function mapMediaToTitles(\Illuminate\Support\Collection $mediaItems, array $titleKindMap): array
+    {
+        if ($mediaItems->isEmpty()) {
+            return [];
+        }
+
+        $videos = $mediaItems->where('kind', 'video')->values();
+        $images = $mediaItems->where('kind', 'image')->values();
+        $result = [];
+
+        foreach ($titleKindMap as $title => $kind) {
+            if ($kind === 'video') {
+                $result[$title] = $videos->shift();
+                continue;
+            }
+
+            $result[$title] = $images->shift();
+        }
+
+        return array_filter($result);
+    }
 }

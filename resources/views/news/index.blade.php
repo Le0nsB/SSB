@@ -10,10 +10,11 @@
             @if ($news->published_at)
                 <p class="text-sm ssb-muted mt-1">{{ $news->published_at->format('d.m.Y H:i') }}</p>
             @endif
+
             @if ($news->excerpt)
                 <p class="ssb-text mt-2">{{ $news->excerpt }}</p>
             @endif
-
+            
             @php
                 $assignedMedia = $newsMediaByTitle[$news->title] ?? ($mediaItems[$loop->index] ?? null);
             @endphp

@@ -15,8 +15,7 @@ class NewsController extends Controller
     public function index(): View
     {
         $newsPosts = collect();
-        $mediaItems = collect();
-        $newsMediaByTitle = [];
+        $mediaItems = $this->getSsbMediaItems();
 
         if (Schema::hasTable('news_posts')) {
             $newsPosts = NewsPost::query()
@@ -26,43 +25,40 @@ class NewsController extends Controller
         }
 
         if ($newsPosts->isEmpty()) {
-            $newsPosts = collect([
-                (object) [
-                    'title' => 'Atvērta pieteikšanās Sunny Streetball #1',
-                    'published_at' => Carbon::now()->subDays(2),
-                    'excerpt' => 'Pieteikšanās atvērta līdz trešdienai, vietu skaits komandām ir ierobežots.',
-                ],
-                (object) [
-                    'title' => 'Publicēts spēļu grafiks',
-                    'published_at' => Carbon::now()->subDay(),
-                    'excerpt' => 'Skaties spēļu laikus un ierašanās laikus katrai komandai sacensību dienā.',
-                ],
-                (object) [
-                    'title' => 'MVP balva un konkursi skatītājiem',
-                    'published_at' => Carbon::now()->subHours(6),
-                    'excerpt' => 'Šajā posmā būs arī metienu konkurss, MVP balva un pārsteiguma aktivitātes.',
-                ],
-            ]);
+            $newsPosts = $this->fallbackNewsPosts();
         }
 
-        $mediaItems = $this->getSsbMediaItems();
-
-        if ($mediaItems->isNotEmpty()) {
-
-            $videos = $mediaItems->where('kind', 'video')->values();
-            $images = $mediaItems->where('kind', 'image')->values();
-
-            $newsMediaByTitle = [
-                'Atvērta pieteikšanās Sunny Streetball #1' => $videos->get(0),
-                'Publicēts spēļu grafiks' => $videos->get(1),
-                'MVP balva un konkursi skatītājiem' => $images->get(0),
-            ];
-        }
+        $newsMediaByTitle = $this->mapMediaToTitles($mediaItems, [
+            'Atvērta pieteikšanās Sunny Streetball #1' => 'video',
+            'Publicēts spēļu grafiks' => 'video',
+            'MVP balva un konkursi skatītājiem' => 'image',
+        ]);
 
         return view('news.index', [
             'newsPosts' => $newsPosts,
             'mediaItems' => $mediaItems,
             'newsMediaByTitle' => $newsMediaByTitle,
+        ]);
+    }
+
+    private function fallbackNewsPosts(): \Illuminate\Support\Collection
+    {
+        return collect([
+            (object) [
+                'title' => 'Atvērta pieteikšanās Sunny Streetball #1',
+                'published_at' => Carbon::now()->subDays(2),
+                'excerpt' => 'Pieteikšanās atvērta līdz trešdienai, vietu skaits komandām ir ierobežots.',
+            ],
+            (object) [
+                'title' => 'Publicēts spēļu grafiks',
+                'published_at' => Carbon::now()->subDay(),
+                'excerpt' => 'Skaties spēļu laikus un ierašanās laikus katrai komandai sacensību dienā.',
+            ],
+            (object) [
+                'title' => 'MVP balva un konkursi skatītājiem',
+                'published_at' => Carbon::now()->subHours(6),
+                'excerpt' => 'Šajā posmā būs arī metienu konkurss, MVP balva un pārsteiguma aktivitātes.',
+            ],
         ]);
     }
 }

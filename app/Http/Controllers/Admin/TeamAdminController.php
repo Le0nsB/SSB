@@ -14,7 +14,6 @@ class TeamAdminController extends Controller
     public function index(): View
     {
         $teams = Team::query()->orderBy('name')->get();
-
         return view('admin.teams.index', compact('teams'));
     }
 
@@ -25,12 +24,7 @@ class TeamAdminController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        $data = $request->validate([
-            'name' => ['required', 'string', 'max:255', Rule::unique('teams', 'name')],
-        ]);
-
-        Team::create($data);
-
+        Team::create($request->validate($this->teamRules()));
         return redirect()->route('admin.teams.index');
     }
 
@@ -41,19 +35,20 @@ class TeamAdminController extends Controller
 
     public function update(Request $request, Team $team): RedirectResponse
     {
-        $data = $request->validate([
-            'name' => ['required', 'string', 'max:255', Rule::unique('teams', 'name')->ignore($team->id)],
-        ]);
-
-        $team->update($data);
-
+        $team->update($request->validate($this->teamRules($team)));
         return redirect()->route('admin.teams.index');
     }
 
     public function destroy(Team $team): RedirectResponse
     {
         $team->delete();
-
         return redirect()->route('admin.teams.index');
+    }
+
+    private function teamRules(?Team $team = null): array
+    {
+        return [
+            'name' => ['required', 'string', 'max:255', Rule::unique('teams', 'name')->ignore($team?->id)],
+        ];
     }
 }

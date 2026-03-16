@@ -45,7 +45,6 @@
                 </div>
             @endif
 
-            <p class="ssb-score mt-3">3x3 • PLAY FAST • PLAY TOGETHER</p>
         </article>
     @empty
         <p class="ssb-muted">Sacensību saraksts vēl nav pievienots.</p>

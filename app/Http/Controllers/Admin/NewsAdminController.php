@@ -28,18 +28,7 @@ class NewsAdminController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        $data = $request->validate([
-            'title' => ['required', 'string', 'max:255'],
-            'slug' => ['nullable', 'string', 'max:255', Rule::unique('news_posts', 'slug')],
-            'excerpt' => ['nullable', 'string', 'max:255'],
-            'content' => ['required', 'string'],
-            'image' => ['nullable', 'image', 'max:4096'],
-            'published_at' => ['nullable', 'date'],
-            'is_published' => ['nullable', 'boolean'],
-        ]);
-
-        $data['slug'] = Str::slug($data['slug'] ?: $data['title']);
-        $data['is_published'] = $request->boolean('is_published');
+        $data = $this->validatedNewsData($request);
 
         if ($request->hasFile('image')) {
             $data['image_path'] = $this->storeImage($request->file('image'));
@@ -57,18 +46,7 @@ class NewsAdminController extends Controller
 
     public function update(Request $request, NewsPost $newsPost): RedirectResponse
     {
-        $data = $request->validate([
-            'title' => ['required', 'string', 'max:255'],
-            'slug' => ['nullable', 'string', 'max:255', Rule::unique('news_posts', 'slug')->ignore($newsPost->id)],
-            'excerpt' => ['nullable', 'string', 'max:255'],
-            'content' => ['required', 'string'],
-            'image' => ['nullable', 'image', 'max:4096'],
-            'published_at' => ['nullable', 'date'],
-            'is_published' => ['nullable', 'boolean'],
-        ]);
-
-        $data['slug'] = Str::slug($data['slug'] ?: $data['title']);
-        $data['is_published'] = $request->boolean('is_published');
+        $data = $this->validatedNewsData($request, $newsPost);
 
         if ($request->hasFile('image')) {
             $this->deleteImage($newsPost->image_path);
@@ -113,5 +91,32 @@ class NewsAdminController extends Controller
         if (File::exists($fullPath)) {
             File::delete($fullPath);
         }
+    }
+
+    private function newsRules(?NewsPost $newsPost = null): array
+    {
+        return [
+            'title' => ['required', 'string', 'max:255'],
+            'slug' => [
+                'nullable',
+                'string',
+                'max:255',
+                Rule::unique('news_posts', 'slug')->ignore($newsPost?->id),
+            ],
+            'excerpt' => ['nullable', 'string', 'max:255'],
+            'content' => ['required', 'string'],
+            'image' => ['nullable', 'image', 'max:4096'],
+            'published_at' => ['nullable', 'date'],
+            'is_published' => ['nullable', 'boolean'],
+        ];
+    }
+
+    private function validatedNewsData(Request $request, ?NewsPost $newsPost = null): array
+    {
+        $data = $request->validate($this->newsRules($newsPost));
+        $data['slug'] = Str::slug($data['slug'] ?: $data['title']);
+        $data['is_published'] = $request->boolean('is_published');
+
+        return $data;
     }
 }
