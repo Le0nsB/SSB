@@ -14,6 +14,7 @@
                 <a href="{{ route('admin.news.index') }}" class="ssb-button-primary">Pārvaldīt jaunumus</a>
                 <a href="{{ route('admin.competitions.index') }}" class="ssb-button-secondary">Pārvaldīt sacensības</a>
                 <a href="{{ route('admin.teams.index') }}" class="ssb-button-secondary">Pārvaldīt komandas</a>
+                <a href="{{ route('admin.team-applications.index') }}" class="ssb-button-secondary">Komandu pieteikumi</a>
             </div>
 
             <form method="POST" action="{{ route('logout') }}" class="pt-2">

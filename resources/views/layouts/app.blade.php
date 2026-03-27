@@ -4,6 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $title ?? 'Sunny Streetball' }}</title>
+    <link rel="icon" type="image/png" href="{{ asset('media/ssb-clips/SSB_favicon2.png') }}?v=1">
+    <link rel="shortcut icon" href="{{ asset('media/ssb-clips/SSB_favicon2.png') }}?v=1">
     <script>
         (function () {
             const savedTheme = localStorage.getItem('ssb-theme');
@@ -12,7 +14,7 @@
             }
         })();
     </script>
-    @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
+    @if (file_exists(public_path('build/manifest.json')))
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     @endif
 </head>
@@ -43,22 +45,21 @@
                             </clipPath>
                         </defs>
                         <g clip-path="url(#theme-toggle-circle-clip)" transform="rotate(45 12 12)">
-                            <rect x="2" y="2" width="10" height="20" fill="#2563eb" />
+                            <rect x="2" y="2" width="10" height="20" fill="#e0730d" />
                             <rect x="12" y="2" width="10" height="20" fill="#ffffff" />
                         </g>
                         <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5" />
                     </svg>
                 </button>
                 @auth
-                    @if (auth()->user()->is_admin)
-                        <a href="{{ route('admin.profile') }}" class="theme-toggle" aria-label="Profils" title="Profils">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-user" aria-hidden="true">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
-                                <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-                            </svg>
-                        </a>
-                    @endif
+                    <span class="hidden sm:inline text-sm ssb-muted">Sveiki, {{ auth()->user()->name }}</span>
+                    <a href="{{ route('profile.edit') }}" class="theme-toggle" aria-label="Profils" title="Profils">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-user" aria-hidden="true">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                            <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+                            <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+                        </svg>
+                    </a>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit" class="theme-toggle" aria-label="Log out" title="Log out">
@@ -71,6 +72,15 @@
                         </button>
                     </form>
                 @else
+                    <a href="{{ route('register') }}" class="theme-toggle" aria-label="Reģistrēties" title="Reģistrēties">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-user-plus" aria-hidden="true">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                            <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+                            <path d="M16 19h6" />
+                            <path d="M19 16v6" />
+                            <path d="M6 21v-2a4 4 0 0 1 4 -4h4" />
+                        </svg>
+                    </a>
                     <a href="{{ route('login') }}" class="theme-toggle" aria-label="Log in" title="Log in">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-login" aria-hidden="true">
                             <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
@@ -119,7 +129,7 @@
 
             const updateToggleA11y = () => {
                 const isLight = root.classList.contains('theme-light');
-                const label = isLight ? 'Pārslēgt uz melns oranžs motīvu' : 'Pārslēgt uz zils balts motīvu';
+                const label = isLight ? 'Pārslēgt uz melns oranžs motīvu' : 'Pārslēgt uz balts oranžs motīvu';
                 toggle.setAttribute('aria-label', label);
                 toggle.setAttribute('title', label);
             };

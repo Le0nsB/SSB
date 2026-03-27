@@ -12,61 +12,58 @@
 }
 
 @layer base {
-    /* Improves readability on dark UI with cleaner rhythm and contrast */
     html {
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
+        background-color: #070707;
+    }
+
+    html.theme-light {
+        background-color: #ffffff;
     }
 
     body {
         background-color: #070707;
+        min-height: 100%;
         color: #e4e4e7;
         line-height: 1.55;
         letter-spacing: 0.01em;
     }
 
     html.theme-light body {
-        background-color: #031a46;
-        background-image:
-            radial-gradient(circle at 20% 0%, rgba(26, 0, 74, 0.638), transparent 45%),
-            radial-gradient(circle at 80% 100%, rgba(11, 0, 53, 0.711), transparent 40%);
+        background-color: #ffffff;
     }
 }
 
 @layer components {
-    /* Adds subtle court-like line texture without heavy graphics */
     .ssb-shell {
-        @apply bg-black text-zinc-100 min-h-screen;
+        @apply text-zinc-100 min-h-screen;
         position: relative;
+        background-color: #000000;
         background-image:
-            linear-gradient(to bottom, rgba(0, 0, 0, 0.14), rgba(0, 0, 0, 0.14)),
-            repeating-linear-gradient(
-                90deg,
-                rgba(251, 146, 60, 0.035) 0,
-                rgba(251, 146, 60, 0.035) 1px,
-                transparent 1px,
-                transparent 56px
-            );
+            radial-gradient(circle at 8% 18%, rgba(78, 37, 42, 0.25), transparent 15%),
+            radial-gradient(circle at 35% 10%, rgba(100, 54, 18, 0.3), transparent 20%),
+            radial-gradient(circle at 68% 78%, rgba(175, 104, 32, 0.1), transparent 38%),
+            linear-gradient(160deg, #060606 0%, #0a0a0a 48%, #050505 100%);
+        background-repeat: no-repeat;
+        background-size: cover;
     }
 
-    /* Keeps header readable and anchored while scrolling */
+   
     .ssb-header {
         @apply border-b border-zinc-800/80 bg-zinc-950/92 backdrop-blur;
         box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
     }
 
-    /* Brand stays bold but slightly more premium */
     .ssb-brand {
         @apply text-lg font-extrabold tracking-[0.06em] text-orange-400;
         font-family: 'Teko', 'Rajdhani', sans-serif;
     }
 
-    /* Clear interactive nav target with subtle contrast */
     .ssb-nav-link {
         @apply relative rounded-md px-2 py-1 text-zinc-300 transition-colors duration-200 hover:text-zinc-100;
     }
 
-    /* Active nav gets clear but lightweight orange indicator */
     .ssb-nav-link-active {
         @apply text-zinc-100;
     }
@@ -82,19 +79,16 @@
         background: rgba(251, 146, 60, 0.85);
     }
 
-    /* Reduce orange overuse: primary headings white, accents stay orange */
     .ssb-title {
         @apply text-zinc-100 font-black tracking-[0.03em];
         font-family: 'Teko', 'Rajdhani', sans-serif;
     }
 
-    /* Subtitles keep orange for hierarchy and streetball energy */
     .ssb-subtitle {
         @apply text-orange-300 font-bold tracking-wide;
         font-family: 'Teko', 'Rajdhani', sans-serif;
     }
 
-    /* Card depth + hover feedback improves scanability without flashiness */
     .ssb-card {
         @apply border border-zinc-800 rounded-xl bg-zinc-900/95 p-4;
         box-shadow: 0 8px 20px rgba(0, 0, 0, 0.28);
@@ -110,7 +104,6 @@
         @apply border-b border-zinc-800;
     }
 
-    /* Stronger contrast for supporting copy */
     .ssb-muted {
         @apply text-zinc-500;
     }
@@ -119,7 +112,6 @@
         @apply text-zinc-200;
     }
 
-    /* Primary CTA gets tactile feel with small, performant transitions */
     .ssb-button-primary {
         @apply inline-flex items-center justify-center rounded-lg bg-orange-300 px-6 py-3 text-sm font-extrabold text-black;
         transition: transform 0.16s ease, background-color 0.16s ease, box-shadow 0.16s ease;
@@ -132,7 +124,6 @@
         box-shadow: 0 10px 18px rgba(251, 146, 60, 0.24);
     }
 
-    /* Secondary buttons stay quiet but clear on hover */
     .ssb-button-secondary {
         @apply inline-flex items-center justify-center rounded-lg border border-zinc-700 bg-zinc-900 px-6 py-3 text-sm font-bold text-zinc-100;
         transition: border-color 0.16s ease, color 0.16s ease, background-color 0.16s ease;
@@ -142,6 +133,10 @@
         border-color: rgba(251, 146, 60, 0.7);
         color: #fdba74;
         background-color: rgba(251, 146, 60, 0.05);
+    }
+
+    .ssb-form-control {
+        @apply w-full rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-zinc-100;
     }
 
     .ssb-score {
@@ -173,7 +168,6 @@
         @apply text-orange-300;
     }
 
-    /* Section separator boosts hierarchy between blocks */
     .ssb-fade-divider {
         display: block;
         height: 2px;
@@ -182,7 +176,6 @@
         background: linear-gradient(90deg, rgba(251, 146, 60, 0.9) 0%, rgba(251, 146, 60, 0.45) 55%, rgba(251, 146, 60, 0) 100%);
     }
 
-    /* Replaces heavy animated frame with static accent frame for performance */
     .ssb-animated-border {
         position: relative;
         padding: 0;
@@ -197,7 +190,6 @@
         border-radius: 0.8rem;
     }
 
-    /* News cards get clearer edge and calmer depth for better readability */
     .ssb-news-article {
         position: relative;
         overflow: hidden;
@@ -208,81 +200,185 @@
         background: linear-gradient(90deg, rgba(39, 39, 42, 0.62) 0%, rgba(39, 39, 42, 0.3) 60%, rgba(39, 39, 42, 0) 100%);
     }
 
+    .ssb-info-popover {
+        position: absolute;
+        top: 0.75rem;
+        right: 0.75rem;
+        z-index: 10;
+    }
+
+    .ssb-info-popover > summary {
+        list-style: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 1.9rem;
+        height: 1.9rem;
+        border-radius: 9999px;
+        border: 1px solid rgba(251, 146, 60, 0.45);
+        background-color: rgba(24, 24, 27, 0.9);
+        color: #fdba74;
+        font-weight: 700;
+        font-size: 0.9rem;
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .ssb-info-popover > summary::-webkit-details-marker {
+        display: none;
+    }
+
+    .ssb-info-popover-panel {
+        position: absolute;
+        top: calc(100% + 0.45rem);
+        right: 0;
+        width: min(88vw, 18rem);
+        border-radius: 0.75rem;
+        border: 1px solid rgba(251, 146, 60, 0.3);
+        background: rgba(9, 9, 11, 0.96);
+        padding: 0.75rem;
+        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+    }
+
+    .ssb-info-popover[open] > summary {
+        border-color: rgba(251, 146, 60, 0.75);
+        color: #fed7aa;
+    }
+
     .theme-light .ssb-accent {
-        @apply text-white;
+        @apply text-orange-600;
     }
 
     .theme-light .theme-toggle {
-        @apply border-white bg-transparent text-white hover:bg-white hover:text-blue-800;
+        @apply border-zinc-300 bg-white text-zinc-700 hover:bg-zinc-100 hover:text-zinc-900;
     }
 
     .theme-light .ssb-shell {
-        @apply text-blue-50;
-        background-color: #0b1c3b;
+        @apply text-zinc-900;
+        background-color: #f0f2f5;
+        background-image: none;
     }
 
     .theme-light .ssb-header {
-        @apply border-white bg-blue-950/80;
+        @apply border-zinc-200 bg-white/95;
+        box-shadow: 0 1px 4px rgba(15, 23, 42, 0.08);
     }
 
     .theme-light .ssb-brand {
-        @apply text-white;
+        @apply text-zinc-900;
     }
 
     .theme-light .ssb-nav-link {
-        @apply text-blue-100 hover:text-white;
+        @apply text-zinc-600 hover:text-zinc-900;
+        background-color: transparent;
+        transition: color 0.16s ease, background-color 0.16s ease;
+    }
+
+    .theme-light .ssb-nav-link:hover {
+        background-color: rgba(249, 250, 251, 0.95);
     }
 
     .theme-light .ssb-nav-link-active {
-        @apply text-white;
+        @apply text-zinc-900;
+    }
+
+    .theme-light .ssb-nav-link-active::after {
+        background: rgba(234, 88, 12, 0.85);
     }
 
     .theme-light .ssb-title {
-        @apply text-white;
+        @apply text-zinc-900;
+      
+        font-size: clamp(1.5rem, 1.3rem + 0.7vw, 1.95rem);
+        line-height: 1.12;
+        letter-spacing: 0.012em;
     }
 
     .theme-light .ssb-subtitle {
-        @apply text-white;
+        @apply text-orange-700;
+        letter-spacing: 0.01em;
     }
 
     .theme-light .ssb-card {
-        @apply border-white bg-blue-950;
+        @apply border-zinc-200 bg-white;
+        background-color: #ffffff;
+        padding: 1rem;
+        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.1);
+        transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+    }
+
+    .theme-light .ssb-card:hover {
+        border-color: rgba(161, 161, 170, 0.6);
+        box-shadow: 0 4px 10px rgba(15, 23, 42, 0.12);
+        transform: translateY(-1px);
     }
 
     .theme-light .ssb-card-line {
-        @apply border-white;
+        @apply border-zinc-200;
+        border: 1px solid rgb(229 231 235);
+        border-radius: 0.75rem;
+        background-color: #ffffff;
+        padding: 1rem;
+        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
     }
 
     .theme-light .ssb-muted {
-        @apply text-blue-100;
+        @apply text-zinc-700;
     }
 
     .theme-light .ssb-text {
-        @apply text-white;
+        @apply text-zinc-900;
     }
 
     .theme-light .ssb-button-primary {
-        @apply bg-white text-blue-800 hover:bg-blue-100;
+        @apply bg-orange-500 text-white hover:bg-orange-600;
+        box-shadow: 0 6px 14px rgba(234, 88, 12, 0.2);
+    }
+
+    .theme-light .ssb-button-primary:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 10px 18px rgba(234, 88, 12, 0.24);
     }
 
     .theme-light .ssb-button-secondary {
-        @apply border-white bg-transparent text-white hover:bg-white hover:text-blue-800;
+        @apply border-zinc-300 bg-transparent text-zinc-700 hover:bg-zinc-900 hover:text-white;
+    }
+
+    .theme-light .ssb-form-control {
+        @apply border-zinc-300 bg-white text-zinc-900;
     }
 
     .theme-light .ssb-score {
-        @apply text-white;
+        @apply text-zinc-900;
     }
 
     .theme-light .ssb-dot {
-        @apply bg-white;
+        @apply bg-zinc-400;
     }
 
     .theme-light .ssb-news-article {
-        border-top: 1px solid rgba(255, 255, 255, 0.75);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.65);
-        border-left: 2px solid rgba(255, 255, 255, 0.95);
+        border-top: 1px solid rgba(229, 231, 235, 1);
+        border-bottom: 1px solid rgba(229, 231, 235, 1);
+        border-left: 2px solid rgba(234, 88, 12, 0.35);
         border-right: 0;
-        background: linear-gradient(90deg, rgba(0, 30, 65, 0.3) 0%, rgba(147, 197, 253, 0.14) 45%, rgba(147, 197, 253, 0) 100%);
+        background: #ffffff;
+    }
+
+    .theme-light .ssb-info-popover > summary {
+        border-color: rgba(161, 161, 170, 0.7);
+        background-color: rgba(255, 255, 255, 0.95);
+        color: rgb(63 63 70);
+    }
+
+    .theme-light .ssb-info-popover-panel {
+        border-color: rgba(209, 213, 219, 1);
+        background: rgba(255, 255, 255, 0.98);
+        box-shadow: 0 8px 20px rgba(15, 23, 42, 0.14);
+    }
+
+    .theme-light .ssb-info-popover[open] > summary {
+        border-color: rgba(234, 88, 12, 0.65);
+        color: rgb(194 65 12);
     }
 
     .theme-light .ssb-animated-border {
@@ -290,6 +386,29 @@
     }
 
     .theme-light .ssb-animated-border > .ssb-card {
-        border-color: rgba(255, 255, 255, 0.7);
+        border-color: rgba(229, 231, 235, 1);
+    }
+
+    .theme-light .ssb-fade-divider {
+        background: linear-gradient(90deg, rgba(234, 88, 12, 0.38) 0%, rgba(161, 161, 170, 0.35) 55%, rgba(161, 161, 170, 0) 100%);
+    }
+
+    .theme-light .ssb-sidebar-card {
+        border-left: 3px solid rgba(234, 88, 12, 0.34);
+        background-color: #ffffff;
+        padding: 1rem;
+    }
+
+    .theme-light .text-zinc-100,
+    .theme-light .text-zinc-200,
+    .theme-light .text-zinc-300,
+    .theme-light .text-zinc-400,
+    .theme-light .text-zinc-500 {
+        color: rgb(24 24 27);
+    }
+
+    .theme-light .placeholder\:text-zinc-400::placeholder,
+    .theme-light .placeholder\:text-zinc-500::placeholder {
+        color: rgb(113 113 122);
     }
 }

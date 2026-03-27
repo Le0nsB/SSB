@@ -46,7 +46,7 @@
     @endif
 
     <section class="grid gap-8 lg:grid-cols-3">
-        <div class="lg:col-span-2">
+        <div class="order-2 lg:order-1 lg:col-span-2">
             <p class="flex items-center gap-2 text-sm ssb-muted mb-3">
                 <span class="ssb-dot"></span>
                 SUNNY STREETBALL AKTUALITĀTES
@@ -57,7 +57,7 @@
 
             @forelse ($latestNews as $news)
                 <article class="ssb-card ssb-news-article mb-4">
-                    <h2 class="text-lg font-semibold text-zinc-100">{{ $news->title }}</h2>
+                    <h2 class="text-lg font-semibold ssb-text">{{ $news->title }}</h2>
                     @if ($news->excerpt)
                         <p class="ssb-text mt-2">{{ $news->excerpt }}</p>
                     @endif
@@ -84,15 +84,15 @@
             @endforelse
         </div>
 
-        <aside class="lg:col-span-1">
+        <aside class="order-1 lg:order-2 lg:col-span-1">
             <div class="ssb-animated-border">
-                <div class="ssb-card space-y-4">
+                <div class="ssb-card ssb-sidebar-card space-y-4">
                     <h2 class="text-lg font-bold ssb-subtitle">Nākamās sacensības</h2>
 
                     @if ($nextCompetition)
                         <div>
                             <p class="text-sm ssb-muted">{{ $eventDay }}</p>
-                            <h3 class="text-xl font-semibold text-zinc-100">{{ $nextCompetition->title }}</h3>
+                            <h3 class="text-xl font-semibold ssb-text">{{ $nextCompetition->title }}</h3>
                         </div>
 
                         <dl class="space-y-2 text-sm">
@@ -122,7 +122,7 @@
                             <p class="text-sm ssb-accent">Pieteikšanās līdz {{ $nextCompetition->registration_deadline->format('d.m.Y') }}</p>
                         @endif
 
-                        <button type="button" class="ssb-button-primary w-full">Pieteikt Komandu</button>
+                        <a href="{{ route('team-applications.create') }}" class="ssb-button-primary w-full">Pieteikt Komandu</a>
                     @else
                         <p class="ssb-muted">Pašlaik nav publicētu nākamo sacensību.</p>
                     @endif

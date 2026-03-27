@@ -63,6 +63,18 @@
 
         <section class="ssb-card mt-6">
             <h2 class="text-2xl ssb-title mb-4">Komandas</h2>
+            <p class="ssb-muted mb-3">
+                Pievienotas komandas: {{ $competition->teams->count() }}
+                @if ($competition->team_limit)
+                    / {{ $competition->team_limit }}
+                @endif
+            </p>
+
+            @if ($errors->has('name') || $errors->has('team'))
+                <div class="mb-3 rounded-lg border border-red-500/60 bg-red-500/10 px-3 py-2 text-sm text-red-200">
+                    {{ $errors->first('name') ?: $errors->first('team') }}
+                </div>
+            @endif
 
             <form method="POST" action="{{ route('admin.competitions.teams.store', $competition) }}" class="flex flex-col sm:flex-row gap-3 mb-4">
                 @csrf
@@ -85,6 +97,14 @@
 
         <section class="ssb-card mt-6">
             <h2 class="text-2xl ssb-title mb-4">Spēļu rezultāti</h2>
+            <p class="ssb-muted mb-3">Spēles posms tiek noteikts automātiski pēc komandu skaita un jau pievienoto spēļu secības.</p>
+
+            @if ($nextMatchStage)
+                <p class="ssb-text mb-3">
+                    Šobrīd tiek pievienota spēle posmā:
+                    <span class="ssb-accent font-semibold">{{ $nextMatchStage }}</span>
+                </p>
+            @endif
 
             @if ($competition->teams->count() >= 2)
                 <form method="POST" action="{{ route('admin.competitions.matches.store', $competition) }}" class="grid md:grid-cols-2 gap-3 mb-4">
@@ -104,6 +124,8 @@
                         @endforeach
                     </select>
 
+                    <input type="datetime-local" name="played_at" value="{{ old('played_at') }}" class="w-full rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-zinc-100">
+
                     <input type="number" name="home_score" min="0" required placeholder="A punkti" class="w-full rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-zinc-100">
                     <input type="number" name="away_score" min="0" required placeholder="B punkti" class="w-full rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-zinc-100">
 
@@ -116,10 +138,55 @@
             @endif
 
             @forelse ($competition->matches as $match)
-                <p class="ssb-text py-1">• {{ $match->homeTeam?->name }} {{ $match->home_score }} : {{ $match->away_score }} {{ $match->awayTeam?->name }}</p>
+                <p class="ssb-text py-1">
+                    • {{ $stageOptions[$match->stage] ?? 'Spēle' }}:
+                    {{ $match->homeTeam?->name }} {{ $match->home_score }} : {{ $match->away_score }} {{ $match->awayTeam?->name }}
+                    @if ($match->played_at)
+                        <span class="ssb-muted">({{ $match->played_at->format('d.m.Y H:i') }})</span>
+                    @endif
+                </p>
             @empty
                 <p class="ssb-muted">Rezultāti vēl nav pievienoti.</p>
             @endforelse
+        </section>
+
+        <section class="ssb-card mt-6">
+            <h2 class="text-2xl ssb-title mb-4">Turnīra tabula</h2>
+
+            @if ($standings->isNotEmpty())
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="text-left ssb-muted">
+                                <th class="py-2 pr-3">Komanda</th>
+                                <th class="py-2 pr-3">SP</th>
+                                <th class="py-2 pr-3">U</th>
+                                <th class="py-2 pr-3">Z</th>
+                                <th class="py-2 pr-3">PF</th>
+                                <th class="py-2 pr-3">PA</th>
+                                <th class="py-2 pr-3">+/-</th>
+                                <th class="py-2 pr-0">P</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($standings as $row)
+                                <tr class="border-t border-zinc-800/70">
+                                    <td class="py-2 pr-3 ssb-text">{{ $row['team']->name }}</td>
+                                    <td class="py-2 pr-3 ssb-text">{{ $row['played'] }}</td>
+                                    <td class="py-2 pr-3 ssb-text">{{ $row['wins'] }}</td>
+                                    <td class="py-2 pr-3 ssb-text">{{ $row['losses'] }}</td>
+                                    <td class="py-2 pr-3 ssb-text">{{ $row['points_for'] }}</td>
+                                    <td class="py-2 pr-3 ssb-text">{{ $row['points_against'] }}</td>
+                                    <td class="py-2 pr-3 ssb-text">{{ $row['diff'] }}</td>
+                                    <td class="py-2 pr-0 ssb-accent font-semibold">{{ $row['table_points'] }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @else
+                <p class="ssb-muted">Tabula parādīsies pēc komandu/spēļu pievienošanas.</p>
+            @endif
         </section>
 
         <section class="ssb-card mt-6">

@@ -7,10 +7,32 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class AuthController extends Controller
 {
+    public function showRegister(): View
+    {
+        return view('auth.register');
+    }
+
+    public function register(Request $request): RedirectResponse
+    {
+        $validated = $request->validate($this->registerRules());
+
+        $user = User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
+        ]);
+
+        Auth::login($user);
+        $request->session()->regenerate();
+
+        return redirect()->route('team-applications.create');
+    }
+
     public function showLogin(): View
     {
         return view('auth.login');
@@ -50,11 +72,45 @@ class AuthController extends Controller
         return view('admin.profile');
     }
 
+    public function showProfile(): View
+    {
+        return view('profile.edit');
+    }
+
+    public function updateProfile(Request $request): RedirectResponse
+    {
+        $user = $request->user();
+
+        $validated = $request->validate([
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('users', 'name')->ignore($user?->id),
+            ],
+        ]);
+
+        $user->update([
+            'name' => $validated['name'],
+        ]);
+
+        return back()->with('status', 'Lietotājvārds veiksmīgi nomainīts.');
+    }
+
     private function loginRules(): array
     {
         return [
             'identity' => ['required', 'string'],
             'password' => ['required', 'string'],
+        ];
+    }
+
+    private function registerRules(): array
+    {
+        return [
+            'name' => ['required', 'string', 'max:255', Rule::unique('users', 'name')],
+            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users', 'email')],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
         ];
     }
 

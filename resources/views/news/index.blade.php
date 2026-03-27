@@ -6,7 +6,7 @@
 
     @forelse ($newsPosts as $news)
         <article class="ssb-card-line pb-4 mb-4">
-            <h2 class="font-semibold text-zinc-100">{{ $news->title }}</h2>
+            <h2 class="font-semibold ssb-text">{{ $news->title }}</h2>
             @if ($news->published_at)
                 <p class="text-sm ssb-muted mt-1">{{ $news->published_at->format('d.m.Y H:i') }}</p>
             @endif

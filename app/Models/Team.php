@@ -11,5 +11,11 @@ class Team extends Model
 
     protected $fillable = [
         'name',
+        'logo_path',
+        'players',
+    ];
+
+    protected $casts = [
+        'players' => 'array',
     ];
 }

@@ -37,6 +37,11 @@
 
                 <button type="submit" class="ssb-button-primary w-full">Ielogoties</button>
             </form>
+
+            <p class="text-sm ssb-muted">
+                Nav konta?
+                <a href="{{ route('register') }}" class="ssb-accent font-semibold">Reģistrēties</a>
+            </p>
         </div>
     </section>
 @endsection

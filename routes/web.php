@@ -6,7 +6,9 @@ use App\Http\Controllers\NewsController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Admin\CompetitionAdminController;
 use App\Http\Controllers\Admin\NewsAdminController;
+use App\Http\Controllers\Admin\TeamApplicationAdminController;
 use App\Http\Controllers\Admin\TeamAdminController;
+use App\Http\Controllers\TeamApplicationController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -16,10 +18,16 @@ Route::get('/jaunumi', [NewsController::class, 'index'])->name('news.index');
 Route::middleware('guest')->group(function () {
 	Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 	Route::post('/login', [AuthController::class, 'login'])->name('login.attempt');
+	Route::get('/registracija', [AuthController::class, 'showRegister'])->name('register');
+	Route::post('/registracija', [AuthController::class, 'register'])->name('register.store');
 });
 
 Route::middleware('auth')->group(function () {
 	Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+	Route::get('/profils', [AuthController::class, 'showProfile'])->name('profile.edit');
+	Route::put('/profils', [AuthController::class, 'updateProfile'])->name('profile.update');
+	Route::get('/komandas-pieteikums', [TeamApplicationController::class, 'create'])->name('team-applications.create');
+	Route::post('/komandas-pieteikums', [TeamApplicationController::class, 'store'])->name('team-applications.store');
 
 	Route::get('/admin/profils', [AuthController::class, 'adminProfile'])->name('admin.profile');
 });
@@ -48,4 +56,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 	Route::get('/komandas/{team}/rediget', [TeamAdminController::class, 'edit'])->name('teams.edit');
 	Route::put('/komandas/{team}', [TeamAdminController::class, 'update'])->name('teams.update');
 	Route::delete('/komandas/{team}', [TeamAdminController::class, 'destroy'])->name('teams.destroy');
+
+	Route::get('/komandu-pieteikumi', [TeamApplicationAdminController::class, 'index'])->name('team-applications.index');
+	Route::put('/komandu-pieteikumi/{teamApplication}/apstiprinat', [TeamApplicationAdminController::class, 'approve'])->name('team-applications.approve');
+	Route::put('/komandu-pieteikumi/{teamApplication}/noraidit', [TeamApplicationAdminController::class, 'reject'])->name('team-applications.reject');
 });

@@ -14,8 +14,14 @@ class CompetitionMatch extends Model
         'competition_id',
         'home_team_id',
         'away_team_id',
+        'stage',
         'home_score',
         'away_score',
+        'played_at',
+    ];
+
+    protected $casts = [
+        'played_at' => 'datetime',
     ];
 
     public function competition(): BelongsTo
