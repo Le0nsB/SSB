@@ -290,7 +290,6 @@ class CompetitionAdminController extends Controller
             return 'final';
         }
 
-        // Classic 4-team streetball bracket: 2x semifinal, bronze game, final.
         if ($teamCount === 4) {
             if ($matchCount < 2) {
                 return 'semifinal';
@@ -299,7 +298,6 @@ class CompetitionAdminController extends Controller
             return $matchCount === 2 ? 'bronze' : 'final';
         }
 
-        // Classic 8-team bracket: 4x quarterfinal, 2x semifinal, bronze game, final.
         if ($teamCount === 8) {
             if ($matchCount < 4) {
                 return 'quarterfinal';
@@ -311,8 +309,6 @@ class CompetitionAdminController extends Controller
 
             return $matchCount === 6 ? 'bronze' : 'final';
         }
-
-        // For other team counts, default to group games to keep setup simple.
         return 'group';
     }
 }
